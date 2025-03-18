@@ -8,11 +8,23 @@ use App\Models\Product;
 class ProductController extends Controller
 {
     public function store(Request $request)
-    {
-        $product = Product::create($request->all());
-        $product->categorie()->attach($request->categorie_id);
-        return response()->json($product, 201);
-    }
+{
+    $request->validate([
+        'name' => 'required',
+        'price' => 'required',
+        'categorie_id' => 'required',
+    ]);
+
+    $product = Product::create([
+        'name' => $request->name,
+        'price' => $request->price,
+    ]);
+
+    $product->categories()->attach($request->categorie_id);
+
+    return response()->json($product, 201);
+}
+
 
     public function show($productid)
     {
